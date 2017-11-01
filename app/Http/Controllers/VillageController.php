@@ -10,7 +10,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use JWTAuth;
-use App\Village;
+use App\Market;
+use App\Resource;
 
 class VillageController extends Controller
 {
@@ -20,10 +21,22 @@ class VillageController extends Controller
 
         error_log('User ' . $user['email'] . ' pobiera informacje o wioskach.');
 
+        $market = Market::all();
+
+        $resources = Resource::where(['user_id' => $user->id])->get()->map(function ($res, $key) use ($market) {
+
+            $resName = $market->first(function ($item, $key) use ($res) {
+                return $item['id'] == $res['market_id'];
+            });
+            $res->setAttribute('name', $resName['name']);
+            $res->setAttribute('price', $resName['price']);
+            return $res;
+
+        });
 
         error_log('jest user: ' . $user);
-        $village = Village::where('user_id', $request->user()['id']);
-        return response()->json(['data' => $village], 200);
+
+        return response()->json(['data' => $resources], 200);
 
     }
 

@@ -31,4 +31,9 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Village');
     }
+
+    public function resource()
+    {
+        return $this->hasMany('App\Resource');
+    }
 }

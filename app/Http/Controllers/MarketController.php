@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Market;
 use App\Resource;
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -22,7 +23,11 @@ class MarketController extends Controller
         $user = JWTAuth::parseToken()->toUser();
         error_log('User ' . $user['email'] . ' pobiera informacje o wartościach na rynku.');
 
-        return response()->json(['data' => Resource::all()], 200);
+        $markets=Market::all();
+
+        error_log('pobralem market info dla usera: ' . $user->id . ' takie: ' . $markets);
+
+        return response()->json(['data' => $markets], 200);
 
     }
 

@@ -8,6 +8,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Market;
+use App\Resource;
 use App\User;
 use App\Village;
 use Illuminate\Http\Request;
@@ -40,6 +42,14 @@ class UserController extends Controller
 
         $user->village()->save($village);
 
+        $market = Market::all()->each(function ($item, $key) use ($user) {
+            $resource = new Resource([
+                'market_id'=>$item->id,
+                'user_id'=>$user->id,
+                'amount'=>10
+            ]);
+            $user->resource()->save($resource);
+        });
 
         error_log('Utworzono wioskę: ' . $village);
 
